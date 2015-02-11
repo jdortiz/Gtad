@@ -1,10 +1,14 @@
 package com.powwau.gtad;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * 20150211. Initial version created by jorge.
  */
 public class TodolyProject {
+    @SerializedName("Id")
     private String mId;
+    @SerializedName("Content")
     private String mName;
 
     public TodolyProject() {
