@@ -1,5 +1,6 @@
 package com.powwau.gtad;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -24,7 +25,12 @@ public class ProjectListFragment extends ListFragment {
     ArrayAdapter<TodolyProject> mAdapter;
 
     public ProjectListFragment() {
-        TodolyService todolyService = new TodolyService();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        TodolyService todolyService = new TodolyService(getString(R.string.todoly_username), getString(R.string.todoly_password));
         mTodolyApiInterface = todolyService.generateServiceInterface();
     }
 
@@ -49,7 +55,6 @@ public class ProjectListFragment extends ListFragment {
                     mAdapter.addAll(projects);
                     mAdapter.notifyDataSetChanged();
                 } else {
-
                     Log.e(LOG_TAG, "Project retrieval status problem: " + response.getReason());
                 }
             }
