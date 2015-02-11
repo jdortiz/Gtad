@@ -1,10 +1,13 @@
 package com.powwau.gtad;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
@@ -42,6 +45,16 @@ public class ProjectListFragment extends ListFragment {
                 R.layout.list_item_project, R.id.text_view_project_name,
                 projects);
         setListAdapter(mAdapter);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TodolyProject selectedProject = (TodolyProject)mAdapter.getItem(position);
+                String selectedPrjId = selectedProject.getId();
+                Intent intent = new Intent(getActivity(), TaskListActivity.class);
+                intent.putExtra(TaskListActivity.PROJECT_ID, selectedPrjId);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
