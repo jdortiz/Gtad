@@ -11,6 +11,7 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.http.GET;
+import retrofit.http.Path;
 
 /**
  * 20150211. Initial version created by jorge.
@@ -18,8 +19,9 @@ import retrofit.http.GET;
 public class TodolyService {
 
     final static String TODOLY_API_URL = "https://todo.ly/api";
-    final static String PROJECTS_ENDPOINT = "/projects.json";
     final static String ACCEPTED_DATA = "application/json";
+    final static String PROJECTS_ENDPOINT = "/projects.json";
+    final static String PROJECT_TASKS_ENDPOINT = "/projects/{id}/items.json";
 
     private String mUsername;
     private String mPassword;
@@ -27,6 +29,9 @@ public class TodolyService {
     public interface ApiInterface {
         @GET(PROJECTS_ENDPOINT)
         void getProjects(Callback<List<TodolyProject>> callback);
+
+        @GET(PROJECT_TASKS_ENDPOINT)
+        void getTasksForProjectId(@Path("id")String id, Callback<List<TodolyTask>> callback);
     }
 
     public TodolyService(String username, String password) {

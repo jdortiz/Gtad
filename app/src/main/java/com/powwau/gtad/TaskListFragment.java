@@ -1,5 +1,6 @@
 package com.powwau.gtad;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,10 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -21,9 +26,17 @@ public class TaskListFragment extends ListFragment {
     final static String PROJECT_ID = "PROJECT_ID";
 
     private String mProjectID = "";
+    private TodolyService.ApiInterface mTodolyApiInterface;
     private ArrayAdapter<TodolyTask> mAdapter;
 
     public TaskListFragment() {
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        TodolyService todolyService = new TodolyService(getString(R.string.todoly_username), getString(R.string.todoly_password));
+        mTodolyApiInterface = todolyService.generateServiceInterface();
     }
 
     @Override
@@ -45,5 +58,20 @@ public class TaskListFragment extends ListFragment {
         setListAdapter(mAdapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mTodolyApiInterface.getTasksForProjectId(mProjectID, new Callback<List<TodolyTask>>() {
+            @Override
+            public void success(List<TodolyTask> todolyTasks, Response response) {
+                mAdapter.clear();
+                mAdapter.addAll(todolyTasks);
+                mAdapter.notifyDataSetChanged();
+            }
 
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
+    }
 }
