@@ -2,11 +2,14 @@ package com.powwau.gtad;
 
 import android.util.Base64;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 import retrofit.http.GET;
 
 /**
@@ -34,14 +37,15 @@ public class TodolyService {
     public ApiInterface generateServiceInterface() {
         RestAdapter.Builder builder = new RestAdapter.Builder();
         builder.setEndpoint(TODOLY_API_URL)
-            .setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                String authString = "Basic " + Base64.encodeToString((mUsername+":"+mPassword).getBytes(), Base64.NO_WRAP);
-                request.addHeader("Accept", ACCEPTED_DATA);
-                request.addHeader("Authorization", authString);
-            }
-            });
+                .setClient(new OkClient(new OkHttpClient()))
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        String authString = "Basic " + Base64.encodeToString((mUsername + ":" + mPassword).getBytes(), Base64.NO_WRAP);
+                        request.addHeader("Accept", ACCEPTED_DATA);
+                        request.addHeader("Authorization", authString);
+                    }
+                });
         RestAdapter restAdapter = builder.build();
         return restAdapter.create(ApiInterface.class);
     }
